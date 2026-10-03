@@ -9,6 +9,17 @@ queries, outbound URL requests, command execution, uploads, or application file 
 `alpha-demo-token` is a public test constant, not a credential. No AutoQA Studio code
 or SSRF policy is part of this repository.
 
+Public deployment:
+
+- Base URL: https://autoqa-alpha-target-production.up.railway.app
+- Health: https://autoqa-alpha-target-production.up.railway.app/health
+- OpenAPI: https://autoqa-alpha-target-production.up.railway.app/openapi.json
+
+```dotenv
+AUTOQA_ALPHA_BASE_URL=https://autoqa-alpha-target-production.up.railway.app
+AUTOQA_ALPHA_OPENAPI_URL=https://autoqa-alpha-target-production.up.railway.app/openapi.json
+```
+
 ## Run and test
 
 Python 3.11 or later:
@@ -83,7 +94,7 @@ docker stop autoqa-alpha-target-local
 docker rm autoqa-alpha-target-local
 ```
 
-The Linux image runs as UID/GID `10001:10001`. Its exec-form Python entry point reads
+The Python 3.12 Linux image runs as UID/GID `10001:10001`. Its exec-form Python entry point reads
 `PORT` directly without a shell. There is no volume or writable application storage requirement.
 
 ## Railway
@@ -97,7 +108,7 @@ database configuration is required; the container consumes Railway's `PORT`.
 railway init --name AutoQA-Alpha-Target --workspace YOUR_WORKSPACE_ID --json
 railway add --service AutoQA-Alpha-Target --json
 railway up --service AutoQA-Alpha-Target --detach
-railway domain --service AutoQA-Alpha-Target --json
+railway domain --service AutoQA-Alpha-Target --port 8080 --json
 python -m scripts.verify https://YOUR_DOMAIN.up.railway.app \
   --require-public --output artifacts/public-verification.json
 ```
