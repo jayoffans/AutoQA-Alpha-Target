@@ -1,4 +1,5 @@
 .venv/
+.railway/.venv/
 __pycache__/
 .pytest_cache/
 artifacts/

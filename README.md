@@ -100,15 +100,26 @@ The Python 3.12 Linux image runs as UID/GID `10001:10001`. Its exec-form Python 
 ## Railway
 
 Create a new Railway project and one independent service. Do not select or modify
-AutoQA Studio, AutoQA Demo, or their databases. `railway.toml` selects the Dockerfile,
-one replica, and the `/health` deployment healthcheck. No user-supplied secret or
+AutoQA Studio, AutoQA Demo, or their databases. `.railway/railway.py` manages only this
+service and its `/health` deployment healthcheck; Railway builds the root Dockerfile.
+No user-supplied secret or
 database configuration is required; the container consumes Railway's `PORT`.
 
 ```sh
 railway init --name AutoQA-Alpha-Target --workspace YOUR_WORKSPACE_ID --json
 railway add --service AutoQA-Alpha-Target --json
+# Install the isolated authoring SDK and activate this environment before config commands.
+python -m venv .railway/.venv
+# Linux/macOS: source .railway/.venv/bin/activate
+# Windows PowerShell: .\.railway\.venv\Scripts\Activate.ps1
+python -m pip install --require-hashes -r .railway/requirements.txt
+# On Windows the Railway Python runner expects python3.exe in this environment:
+# Copy-Item .railway/.venv/Scripts/python.exe .railway/.venv/Scripts/python3.exe
+railway config plan
+railway config apply --yes
 railway up --service AutoQA-Alpha-Target --detach
 railway domain --service AutoQA-Alpha-Target --port 8080 --json
+# Use the application's dev environment for the HTTP verifier.
 python -m scripts.verify https://YOUR_DOMAIN.up.railway.app \
   --require-public --output artifacts/public-verification.json
 ```
@@ -119,6 +130,12 @@ and validates every API response against the OpenAPI served by that deployment.
 It also checks repeated successful inputs and absence of persistence.
 Verification reports and local environment files are ignored by Git and Railway uploads.
 
+The pinned Railway authoring SDK is an administrative tool only and is excluded from
+the service image. The project uses Railway's Python Infrastructure as Code authoring
+instead of the deprecated `railway.toml` format. Application deployment remains connected
+to this GitHub repository's `main` branch; apply IaC separately when changing infrastructure.
+
 Official Railway documentation: [CLI deployment](https://docs.railway.com/cli/up),
-[public domains](https://docs.railway.com/cli/domain), and
-[healthchecks](https://docs.railway.com/deployments/healthchecks).
+[public domains](https://docs.railway.com/cli/domain),
+[healthchecks](https://docs.railway.com/deployments/healthchecks), and
+[Infrastructure as Code](https://docs.railway.com/infrastructure-as-code).
