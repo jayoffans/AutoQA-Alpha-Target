@@ -134,6 +134,8 @@ The pinned Railway authoring SDK is an administrative tool only and is excluded 
 the service image. The project uses Railway's Python Infrastructure as Code authoring
 instead of the deprecated `railway.toml` format. Application deployment remains connected
 to this GitHub repository's `main` branch; apply IaC separately when changing infrastructure.
+Python IaC authoring is currently a Railway beta feature; SDK `0.2.0` is pinned and the
+configuration is verified with `railway config plan` and `railway config apply`.
 
 Official Railway documentation: [CLI deployment](https://docs.railway.com/cli/up),
 [public domains](https://docs.railway.com/cli/domain),

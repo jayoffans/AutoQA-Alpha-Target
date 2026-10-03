@@ -13,6 +13,6 @@ def main(ctx=None):
         build={"builder": "DOCKERFILE", "dockerfilePath": "/Dockerfile"},
         healthcheck="/health",
         healthcheckTimeout=60,
-        deploy={"restartPolicyType": "ON_FAILURE", "restartPolicyMaxRetries": 3},
+        deploy={"restartPolicyMaxRetries": 3},
     )
     return project("AutoQA-Alpha-Target", resources=[target])
